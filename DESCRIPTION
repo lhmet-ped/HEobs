@@ -1,14 +1,13 @@
 Package: HEobs
-Title: What the Package Does (One Line, Title Case)
+Title: Data Processing Of Natural Streamflow And Metadata From Ons Stations.
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Jônatan",
            family = "Tatsch",
            role = c("aut", "cre"),
            email = "lhmet@ufsm.br")
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+Description: Ingest, clean and tidy data of natural streamflow and metadata from ONS stations.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
