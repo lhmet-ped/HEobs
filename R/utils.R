@@ -39,14 +39,12 @@
 #' @seealso
 #'  "\code{\link[import_metadata]{HEobs}}"
 #' @importFrom dplyr mutate
-.add_cod_name <- function(x, txt_file) {
+.add_cod_name <- function(DT, txt_file) {
   md <- import_metadata(txt_file)
-  x <- x %>%
-    dplyr::mutate(.,
-           code_stn = md$estacao_codigo[x$id],
-           name_stn = md$nome_estacao[x$id]
-    )
-  x
+  DT[, c("code_stn", "name_stn") :=
+       .(md$estacao_codigo[ DT[[id]] ],  md$nome_estacao[ DT[[id]] ])
+     ]
+  DT
 }
 
 
