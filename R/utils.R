@@ -1,5 +1,5 @@
 #---------------------------------------------------------------
-.replace_bigneg <- function(x) replace(x, which(x < -9999), NA)
+.replace_bigneg <- function(x) replace(x, which(x < -999), NA)
 
 #---------------------------------------------------------------
 #' Drops variables in DT which have the same values for all observations.
@@ -11,7 +11,7 @@
 #'  \code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}},
 #' "\code{\link[import_metadata]{HEobs}}"
 #' @importFrom checkmate assert_data_frame
-#' @importFrom data.table as.data.table uniqueN
+#' @importFrom data.table as.data.table uniqueN .SD
 #' @importFrom tibble as_tibble
 .informative <- function(DT) {
   #DT = m
@@ -38,27 +38,14 @@
 #' @details It is used in `import_qnat`
 #' @seealso
 #'  "\code{\link[import_metadata]{HEobs}}"
-#' @importFrom dplyr mutate
+#' @importFrom data.table as.data.table
+#' @importFrom tibble as_tibble
+#'
 .add_cod_name <- function(DT, txt_file) {
-  md <- import_metadata(txt_file)
+  DT <- data.table::as.data.table(DT)
+  md <- extract_metadata(txt_file)
   DT[, c("code_stn", "name_stn") :=
        .(md$estacao_codigo[ DT[[id]] ],  md$nome_estacao[ DT[[id]] ])
      ]
-  DT
-}
-
-# while Delete rows by reference in data.table is not possible
-# issue https://github.com/Rdatatable/data.table/issues/635
-# work around ...
-# https://stackoverflow.com/questions/10790204/how-to-delete-a-row-by-reference-in-data-table/10791729#10791729
-.delete <- function(DT, del.idxs) {           # pls note 'del.idxs' vs. 'keep.idxs'
-  keep.idxs <- setdiff(DT[, .I], del.idxs);  # select row indexes to keep
-  cols = names(DT);
-  DT.subset <- data.table(DT[[1]][keep.idxs]); # this is the subsetted table
-  setnames(DT.subset, cols[1]);
-  for (col in cols[2:length(cols)]) {
-    DT.subset[, (col) := DT[[col]][keep.idxs]];
-    DT[, (col) := NULL];  # delete
-  }
-  return(DT.subset);
+  tibble::as_tibble(DT)
 }
