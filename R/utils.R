@@ -47,4 +47,18 @@
   DT
 }
 
-
+# while Delete rows by reference in data.table is not possible
+# issue https://github.com/Rdatatable/data.table/issues/635
+# work around ...
+# https://stackoverflow.com/questions/10790204/how-to-delete-a-row-by-reference-in-data-table/10791729#10791729
+.delete <- function(DT, del.idxs) {           # pls note 'del.idxs' vs. 'keep.idxs'
+  keep.idxs <- setdiff(DT[, .I], del.idxs);  # select row indexes to keep
+  cols = names(DT);
+  DT.subset <- data.table(DT[[1]][keep.idxs]); # this is the subsetted table
+  setnames(DT.subset, cols[1]);
+  for (col in cols[2:length(cols)]) {
+    DT.subset[, (col) := DT[[col]][keep.idxs]];
+    DT[, (col) := NULL];  # delete
+  }
+  return(DT.subset);
+}
