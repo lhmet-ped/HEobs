@@ -16,4 +16,9 @@ URL: https://github.com/lhmet/HEobs
 BugReports: https://github.com/lhmet/HEobs/issues
 Imports: 
     data.table,
-    checkmate
+    checkmate,
+    magrittr,
+    rio,
+    dplyr,
+    tibble,
+    janitor
