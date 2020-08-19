@@ -3,6 +3,11 @@
 \name{extract_metadata}
 \alias{extract_metadata}
 \title{Import metadata from streamflow stations of ONS}
+\source{
+The metadata 87 hydroelectric power plants operated by ONS were
+supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
+Lima (UnB), by email on 2020-03-17.
+}
 \usage{
 extract_metadata(txt_file = "", informative = FALSE)
 }
@@ -12,27 +17,23 @@ extract_metadata(txt_file = "", informative = FALSE)
 \item{informative}{Logical. Drop non-informative variables. Default: FALSE}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}
+a \link[tibble:tibble-package]{tibble} with tidy data
 }
 \description{
 Import metadata from streamflow stations of ONS
 }
 \details{
-DETAILS
+The text file contains data and metadata from ONS Hydroelectric
+Plants. Metadata is extracted from the first 15 lines of the ascii file.
+The information for each HPP is stored in pairs of columns. The first column
+is the name of the variables and the second the values of the variables.
+The data is processed in tidy format.
 }
 \examples{
-\dontrun{
-if(interactive()){
-  file <- "https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1"
-  qnat_meta <- import_metadata(file, informative = TRUE)
+if(FALSE){
+  file <- paste0("https://www.dropbox.com/s/d40adhw66uwueet/",
+  "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1")
+  qnat_meta <- extract_metadata(file, informative = TRUE)
   str(qnat_meta)
- }
 }
-}
-\seealso{
-\code{\link[rio]{import}}
-\code{\link[dplyr]{select}},\code{\link[dplyr]{reexports}},\code{\link[dplyr]{slice}},\code{\link[dplyr]{mutate}},\code{\link[dplyr]{across}}
-\code{\link[tibble]{as_tibble}}
-\code{\link[tidyselect]{vars_select_helpers}}
-\code{\link[janitor]{clean_names}}
 }

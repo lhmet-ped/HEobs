@@ -17,9 +17,8 @@ non-informative variables.
 Drops variables in DT which have the same values for all observations.
 }
 \details{
-It is used in \code{import_metadata}.
+It is used in \code{extract_metadata}.
 }
 \seealso{
-\code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}},
-"\code{\link[import_metadata]{HEobs}}"
+\code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}}
 }

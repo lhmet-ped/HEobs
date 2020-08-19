@@ -8,9 +8,9 @@ Add code and station name from stations metadata}
 .add_cod_name(DT, txt_file)
 }
 \arguments{
-\item{txt_file}{path to ASCII file}
+\item{DT}{tibble}
 
-\item{x}{tibble}
+\item{txt_file}{path to ASCII file}
 }
 \value{
 original data with extra columns \code{code_stn} and \code{name_stn}.
@@ -21,7 +21,4 @@ Add code and station name from stations metadata
 }
 \details{
 It is used in \code{import_qnat}
-}
-\seealso{
-"\code{\link[import_metadata]{HEobs}}"
 }
