@@ -1,32 +1,35 @@
 #' Import metadata from streamflow stations of ONS
 #' @param txt_file Character. File path (or link to data file).
 #' @param informative Logical. Drop non-informative variables. Default: FALSE
-#' @return a [tibble][tibble::tibble-package]
-#' @details DETAILS
+#' @return a [tibble][tibble::tibble-package] with tidy data
+#' @details The text file contains data and metadata from ONS Hydroelectric
+#' Plants. Metadata is extracted from the first 15 lines of the ascii file.
+#' The information for each HPP is stored in pairs of columns. The first column
+#'  is the name of the variables and the second the values of the variables.
+#'  The data is processed in tidy format.
 #' @examples
-#' \dontrun{
-#' if(interactive()){
-#'   file <- "https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1"
-#'   qnat_meta <- import_metadata(file, informative = TRUE)
+#' if(FALSE){
+#'   file <- paste0("https://www.dropbox.com/s/d40adhw66uwueet/",
+#'   "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1")
+#'   qnat_meta <- extract_metadata(file, informative = TRUE)
 #'   str(qnat_meta)
-#'  }
 #' }
-#' @seealso
-#'  \code{\link[rio]{import}}
-#'  \code{\link[dplyr]{select}},\code{\link[dplyr]{reexports}},\code{\link[dplyr]{slice}},\code{\link[dplyr]{mutate}},\code{\link[dplyr]{across}}
-#'  \code{\link[tibble]{as_tibble}}
-#'  \code{\link[tidyselect]{vars_select_helpers}}
-#'  \code{\link[janitor]{clean_names}}
+#' @source The metadata 87 hydroelectric power plants operated by ONS were
+#' supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
+#' Lima (UnB), by email on 2020-03-17.
 #' @rdname extract_metadata
 #' @export
 #' @importFrom rio import
 #' @importFrom dplyr select num_range slice mutate across everything
 #' @importFrom tibble as_tibble
-#' @importFrom tidyselect vars_select_helpers
 #' @importFrom janitor clean_names
+#' @importFrom readr parse_guess
+#' @importFrom tidyselect vars_select_helpers
 extract_metadata <- function(txt_file = "", informative = FALSE) {
-  # txt_file = "../inst/extdata/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat"
+  # txt_file = "inst/extdata/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat"
+  # txt_file = system.file("extdata", "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat", package = "HEobs")
   # txt_file =  "https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1"
+  # @importFrom tidyselect vars_select_helpers
 
   # meta_data <- data.table::fread(
   #   input = as.character(txt_file),
@@ -43,7 +46,8 @@ extract_metadata <- function(txt_file = "", informative = FALSE) {
     sep = ';',
     nrows = 15,
     fill = TRUE,
-    na.strings = c('null', '-99999.0')
+    na.strings = c('null', '-99999.0'),
+    encoding = "Latin-1"
   )
   # remove repeated columns
   meta_data <- meta_data %>%
@@ -57,17 +61,22 @@ extract_metadata <- function(txt_file = "", informative = FALSE) {
     ) %>%
     # transpose data and fix names
     t() %>%
-    tibble::as_tibble() %>%
-    setNames(., slice(., 1)) %>%
+    tibble::as_tibble()
+
+  #janitor::make_clean_names(nms)
+  nms <- unlist(dplyr::slice(meta_data, 1), use.names = FALSE)
+  meta_data <- stats::setNames(meta_data, nms) %>%
+    #stats::setNames(., unlist(dplyr::slice(., 1), use.names = FALSE)) %>%
     dplyr::slice(., -1)
 
   # fix variable types and replace numeric vars < -999 by NA
   meta_data <- meta_data %>%
     dplyr::mutate(
       .,
-      dplyr::across(dplyr::everything(), parse_guess),
+      dplyr::across(dplyr::everything(), readr::parse_guess),
       dplyr::across(
-        tidyselect::vars_select_helpers$where(is.numeric),
+        #tidyselect::vars_select_helpers$where(is.numeric),
+        where(is.numeric),
         .replace_bigneg
         )
     ) %>%
