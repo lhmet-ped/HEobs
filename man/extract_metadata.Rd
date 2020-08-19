@@ -9,10 +9,10 @@ supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
 Lima (UnB), by email on 2020-03-17.
 }
 \usage{
-extract_metadata(txt_file = "", informative = FALSE)
+extract_metadata(file = "", informative = FALSE)
 }
 \arguments{
-\item{txt_file}{Character. File path (or link to data file).}
+\item{file}{Character. File path (or link to data file).}
 
 \item{informative}{Logical. Drop non-informative variables. Default: FALSE}
 }

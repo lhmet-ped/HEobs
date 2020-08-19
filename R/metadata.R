@@ -1,5 +1,5 @@
 #' Import metadata from streamflow stations of ONS
-#' @param txt_file Character. File path (or link to data file).
+#' @param file Character. File path (or link to data file).
 #' @param informative Logical. Drop non-informative variables. Default: FALSE
 #' @return a [tibble][tibble::tibble-package] with tidy data
 #' @details The text file contains data and metadata from ONS Hydroelectric
@@ -24,10 +24,10 @@
 #' @importFrom janitor clean_names
 #' @importFrom readr parse_guess
 #' @importFrom tidyselect vars_select_helpers
-extract_metadata <- function(txt_file = "", informative = FALSE) {
+extract_metadata <- function(file = "", informative = FALSE) {
 
   meta_data <- rio::import(
-    file = as.character(txt_file),
+    file = as.character(file),
     format = 'csv',
     fread = TRUE,
     sep = ';',
