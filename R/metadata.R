@@ -9,8 +9,7 @@
 #'  The data is processed in tidy format.
 #' @examples
 #' if(FALSE){
-#'   file <- paste0("https://www.dropbox.com/s/d40adhw66uwueet/",
-#'   "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1")
+#'   file <- data_link
 #'   qnat_meta <- extract_metadata(file, informative = TRUE)
 #'   str(qnat_meta)
 #' }
@@ -26,18 +25,6 @@
 #' @importFrom readr parse_guess
 #' @importFrom tidyselect vars_select_helpers
 extract_metadata <- function(txt_file = "", informative = FALSE) {
-  # txt_file = "inst/extdata/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat"
-  # txt_file = system.file("extdata", "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat", package = "HEobs")
-  # txt_file =  "https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1"
-  # @importFrom tidyselect vars_select_helpers
-
-  # meta_data <- data.table::fread(
-  #   input = as.character(txt_file),
-  #   sep = ";",
-  #   nrows = 15,
-  #   fill = TRUE,
-  #   na.strings = c("null", "-99999.0")
-  # )
 
   meta_data <- rio::import(
     file = as.character(txt_file),
