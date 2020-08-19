@@ -24,7 +24,7 @@
 #' @importFrom janitor clean_names
 #' @importFrom readr parse_guess
 #' @importFrom tidyselect vars_select_helpers
-extract_metadata <- function(file = "", informative = FALSE) {
+extract_metadata <- function(file, informative = FALSE) {
 
   meta_data <- rio::import(
     file = as.character(file),

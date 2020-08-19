@@ -9,7 +9,7 @@ supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
 Lima (UnB), by email on 2020-03-17.
 }
 \usage{
-extract_metadata(file = "", informative = FALSE)
+extract_metadata(file, informative = FALSE)
 }
 \arguments{
 \item{file}{Character. File path (or link to data file).}
