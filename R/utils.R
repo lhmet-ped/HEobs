@@ -1,3 +1,8 @@
+utils::globalVariables(c(
+  ".", "V1", "V2", "id", "where"
+))
+
+
 #---------------------------------------------------------------
 .replace_bigneg <- function(x) replace(x, which(x < -999), NA)
 
@@ -6,20 +11,19 @@
 #' @param DT `data.frame`, `tibble` or `data.table`.
 #' @return \code{\link[tibble]{as_tibble}} of original data excluding
 #' non-informative variables.
-#' @details It is used in `import_metadata`.
+#' @details It is used in `extract_metadata`.
 #' @seealso
-#'  \code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}},
-#' "\code{\link[import_metadata]{HEobs}}"
+#'  \code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}}
 #' @importFrom checkmate assert_data_frame
 #' @importFrom data.table as.data.table uniqueN .SD
 #' @importFrom tibble as_tibble
 .informative <- function(DT) {
-  #DT = m
+  #DT = meta_data
   checkmate::assert_data_frame(DT)
   #assertive::is_data.frame(DT)
   DT <- data.table::as.data.table(DT)
   sel <- as.vector(
-    (unlist(DT[, lapply(data.table::.SD, data.table::uniqueN)]))
+    (unlist(DT[, lapply(.SD, data.table::uniqueN)]))
     ) > 1
   cols <- names(DT)[sel]
   tibble::as_tibble(
@@ -32,12 +36,10 @@
 #' Add code and station name from stations metadata
 
 #' Add code and station name from stations metadata
-#' @param x tibble
+#' @param DT tibble
 #' @param txt_file path to ASCII file
 #' @return original data with extra columns `code_stn` and `name_stn`.
 #' @details It is used in `import_qnat`
-#' @seealso
-#'  "\code{\link[import_metadata]{HEobs}}"
 #' @importFrom data.table as.data.table
 #' @importFrom tibble as_tibble
 #'
