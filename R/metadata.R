@@ -8,7 +8,7 @@
 #'  is the name of the variables and the second the values of the variables.
 #'  The data is processed in tidy format.
 #' @examples
-#' if(FALSE){
+#' if (FALSE) {
 #'   file <- data_link
 #'   qnat_meta <- extract_metadata(file, informative = TRUE)
 #'   str(qnat_meta)
@@ -25,15 +25,14 @@
 #' @importFrom readr parse_guess
 #' @importFrom tidyselect vars_select_helpers
 extract_metadata <- function(file, informative = FALSE) {
-
   meta_data <- rio::import(
     file = as.character(file),
-    format = 'csv',
+    format = "csv",
     fread = TRUE,
-    sep = ';',
+    sep = ";",
     nrows = 15,
     fill = TRUE,
-    na.strings = c('null', '-99999.0'),
+    na.strings = c("null", "-99999.0"),
     encoding = "Latin-1"
   )
   # remove repeated columns
@@ -50,10 +49,10 @@ extract_metadata <- function(file, informative = FALSE) {
     t() %>%
     tibble::as_tibble()
 
-  #janitor::make_clean_names(nms)
+  # janitor::make_clean_names(nms)
   nms <- unlist(dplyr::slice(meta_data, 1), use.names = FALSE)
   meta_data <- stats::setNames(meta_data, nms) %>%
-    #stats::setNames(., unlist(dplyr::slice(., 1), use.names = FALSE)) %>%
+    # stats::setNames(., unlist(dplyr::slice(., 1), use.names = FALSE)) %>%
     dplyr::slice(., -1)
 
   # fix variable types and replace numeric vars < -999 by NA
@@ -63,14 +62,14 @@ extract_metadata <- function(file, informative = FALSE) {
       dplyr::across(dplyr::everything(), readr::parse_guess),
       dplyr::across(
         tidyselect::vars_select_helpers$where(is.numeric),
-        #where(is.numeric),
+        # where(is.numeric),
         .replace_bigneg
-        )
+      )
     ) %>%
     janitor::clean_names(.) # %T>% glimpse()
 
   # keep informative columns
-  if(informative){
+  if (informative) {
     meta_data <- .informative(meta_data)
   }
   meta_data
