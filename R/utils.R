@@ -1,5 +1,5 @@
 utils::globalVariables(c(
-  ".", "V1", "V2", "id", "where"
+  ".", "V1", "V2", "id"
 ))
 
 

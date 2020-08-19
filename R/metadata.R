@@ -75,8 +75,8 @@ extract_metadata <- function(txt_file = "", informative = FALSE) {
       .,
       dplyr::across(dplyr::everything(), readr::parse_guess),
       dplyr::across(
-        #tidyselect::vars_select_helpers$where(is.numeric),
-        where(is.numeric),
+        tidyselect::vars_select_helpers$where(is.numeric),
+        #where(is.numeric),
         .replace_bigneg
         )
     ) %>%
