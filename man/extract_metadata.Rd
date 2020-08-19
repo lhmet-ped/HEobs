@@ -31,8 +31,7 @@ The data is processed in tidy format.
 }
 \examples{
 if(FALSE){
-  file <- paste0("https://www.dropbox.com/s/d40adhw66uwueet/",
-  "VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1")
+  file <- data_link
   qnat_meta <- extract_metadata(file, informative = TRUE)
   str(qnat_meta)
 }
