@@ -1,5 +1,5 @@
 Package: HEobs
-Title: Data Processing Of Natural Streamflow And Metadata From Ons Stations.
+Title: Data Processing Of Natural Streamflow And Metadata From Ons Stations
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Jônatan",
@@ -21,4 +21,6 @@ Imports:
     rio,
     dplyr,
     tibble,
-    janitor
+    janitor,
+    readr,
+    tidyselect
