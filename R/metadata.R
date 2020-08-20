@@ -8,7 +8,7 @@
 #'  is the name of the variables and the second the values of the variables.
 #'  The data is processed in tidy format.
 #' @examples
-#' if(TRUE){
+#' if(FALSE){
 #'   qnat_meta <- extract_metadata(find_data(), informative = TRUE)
 #'   str(qnat_meta)
 #' }
