@@ -8,10 +8,10 @@
 #'  is the name of the variables and the second the values of the variables.
 #'  The data is processed in tidy format.
 #' @examples
-#'
-#'   qnat_meta <- extract_metadata(data_link, informative = TRUE)
+#' if(TRUE){
+#'   qnat_meta <- extract_metadata(find_data(), informative = TRUE)
 #'   str(qnat_meta)
-#'
+#' }
 #' @source The metadata 87 hydroelectric power plants operated by ONS were
 #' supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
 #' Lima (UnB), by email on 2020-03-17.
@@ -73,3 +73,5 @@ extract_metadata <- function(file, informative = FALSE) {
   }
   meta_data
 }
+
+

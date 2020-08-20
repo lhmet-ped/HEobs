@@ -51,3 +51,14 @@ utils::globalVariables(c(
      ]
   tibble::as_tibble(DT)
 }
+
+#' Print file
+#'
+#' Provides access to the internal data used in example of
+#' \code{\link[HEobs]{extract_metadata}}
+#'
+#' @return character
+#' @export
+find_data <- function(){
+  data_link
+}

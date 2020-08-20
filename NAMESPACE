@@ -2,6 +2,7 @@
 
 export("%>%")
 export(extract_metadata)
+export(find_data)
 import(data.table)
 importFrom(checkmate,assert_data_frame)
 importFrom(data.table,.SD)
