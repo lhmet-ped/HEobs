@@ -12,7 +12,7 @@ Lima (UnB), by email on 2020-03-17.
 extract_metadata(file, informative = FALSE)
 }
 \arguments{
-\item{file}{Character. File path (or link to data file).}
+\item{file}{Character. Path to ascii data file (or a URL).}
 
 \item{informative}{Logical. Drop non-informative variables. Default: FALSE}
 }
