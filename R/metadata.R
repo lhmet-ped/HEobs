@@ -1,5 +1,5 @@
 #' Import metadata from streamflow stations of ONS
-#' @param file Character. File path (or link to data file).
+#' @param file Character. Path to ascii data file (or a URL).
 #' @param informative Logical. Drop non-informative variables. Default: FALSE
 #' @return a [tibble][tibble::tibble-package] with tidy data
 #' @details The text file contains data and metadata from ONS Hydroelectric
