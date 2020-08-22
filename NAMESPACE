@@ -2,12 +2,8 @@
 
 export("%>%")
 export(extract_metadata)
-export(find_data)
+export(import_qnat)
 import(data.table)
-importFrom(checkmate,assert_data_frame)
-importFrom(data.table,.SD)
-importFrom(data.table,as.data.table)
-importFrom(data.table,uniqueN)
 importFrom(dplyr,across)
 importFrom(dplyr,everything)
 importFrom(dplyr,mutate)
