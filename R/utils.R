@@ -7,16 +7,16 @@ utils::globalVariables(c(
 .replace_bigneg <- function(x) replace(x, which(x < -999), NA)
 
 #---------------------------------------------------------------
-#' Drops variables in DT which have the same values for all observations.
-#' @param DT `data.frame`, `tibble` or `data.table`.
-#' @return \code{\link[tibble]{as_tibble}} of original data excluding
-#' non-informative variables.
-#' @details It is used in `extract_metadata`.
-#' @seealso
-#'  \code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}}
-#' @importFrom checkmate assert_data_frame
-#' @importFrom data.table as.data.table uniqueN .SD
-#' @importFrom tibble as_tibble
+# Drops variables in DT which have the same values for all observations.
+# @param DT `data.frame`, `tibble` or `data.table`.
+# @return \code{\link[tibble]{as_tibble}} of original data excluding
+# non-informative variables.
+# @details It is used in `extract_metadata`.
+# @seealso
+#  \code{\link[data.table]{as.data.table}}, \code{\link[tibble]{as_tibble}}
+# @importFrom checkmate assert_data_frame
+# @importFrom data.table as.data.table uniqueN .SD
+# @importFrom tibble as_tibble
 .informative <- function(DT) {
   #DT = meta_data
   checkmate::assert_data_frame(DT)
@@ -33,32 +33,29 @@ utils::globalVariables(c(
 }
 
 #---------------------------------------------------------------
-#' Add code and station name from stations metadata
-
-#' Add code and station name from stations metadata
-#' @param DT tibble
-#' @param txt_file path to ASCII file
-#' @return original data with extra columns `code_stn` and `name_stn`.
-#' @details It is used in `import_qnat`
-#' @importFrom data.table as.data.table
-#' @importFrom tibble as_tibble
-#'
-.add_cod_name <- function(DT, txt_file) {
+# Add code and station name from stations metadata
+# @param DT tibble
+# @param txt_file path to ASCII file
+# @return original data with extra columns `code_stn` and `name_stn`.
+# @details It is used in `import_qnat`
+# @importFrom data.table as.data.table
+# @importFrom tibble as_tibble
+.add_cod_name <- function(DT, file) {
+  # DT = qnat; file = "/home/hidrometeorologista/Dropbox/datasets/GIS/BaciaHidrograficaONS-enviadoProfAssis/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat"
   DT <- data.table::as.data.table(DT)
-  md <- extract_metadata(txt_file)
+  md <- extract_metadata(file, informative = TRUE)
   DT[, c("code_stn", "name_stn") :=
-       .(md$estacao_codigo[ DT[[id]] ],  md$nome_estacao[ DT[[id]] ])
+       .(md$estacao_codigo[ DT[["id"]] ],  md$nome_estacao[ DT[["id"]] ])
      ]
   tibble::as_tibble(DT)
 }
 
-#' Print file
-#'
-#' Provides access to the internal data used in example of
-#' \code{\link[HEobs]{extract_metadata}}
-#'
-#' @return character
-#' @export
+# Print file
+#
+# Provides access to the internal data used in example of
+# \code{\link[HEobs]{extract_metadata}}
+#
+# @return character
 find_data <- function(){
   data_link
 }
