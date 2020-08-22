@@ -41,7 +41,7 @@ utils::globalVariables(c(
 # @importFrom data.table as.data.table
 # @importFrom tibble as_tibble
 .add_cod_name <- function(DT, file) {
-  # DT = qnat; file = "/home/hidrometeorologista/Dropbox/datasets/GIS/BaciaHidrograficaONS-enviadoProfAssis/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat"
+  # DT = qnat; file =
   DT <- data.table::as.data.table(DT)
   md <- extract_metadata(file, informative = TRUE)
   DT[, c("code_stn", "name_stn") :=
@@ -56,6 +56,24 @@ utils::globalVariables(c(
 # \code{\link[HEobs]{extract_metadata}}
 #
 # @return character
-find_data <- function(){
-  data_link
+find_data <- function(local = TRUE){
+
+  if(!local){
+    return(data_link)
+  }
+
+  # use local file for tests
+  if(Sys.info()[["login"]] == "hidrometeorologista"){
+    ds_dir <- "~/Dropbox/datasets/GIS/BaciaHidrograficaONS-enviadoProfAssis"
+    checkmate::assert_directory_exists(ds_dir)
+    #if(dir.exists(ds_dir)){
+      ds_file <- list.files(
+        ds_dir,
+        pattern = "^V.*_2018\\.dat$",
+        full.names = TRUE
+      )
+      return(ds_file)
+    }
+
+ return(NULL)
 }
