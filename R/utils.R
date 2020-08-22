@@ -50,6 +50,7 @@ utils::globalVariables(c(
   tibble::as_tibble(DT)
 }
 
+# ------------------------------------------------------------------------------
 # Print file
 #
 # Provides access to the internal data used in example of
