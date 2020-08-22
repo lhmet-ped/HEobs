@@ -1,0 +1,48 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# HEobs
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The **`{HEobs}`** package makes it easy to process naturalized flow data and metadata from ONS stations.
+
+## Installation
+
+You can install HEobs from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("lhmet/HEobs")
+```
+## Example
+
+Metadata from ONS stations can be obtained with:
+
+```{r example}
+library(HEobs)
+## basic example code
+qnat_meta <- extract_metadata(NA_character_, informative = TRUE)
+qnat_meta
+```
+
+The time series of daily naturalized streamflow  ...
+
+```{r}
+qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+str(qnat)
+```
+
