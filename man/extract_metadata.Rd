@@ -5,7 +5,7 @@
 \title{Import metadata from streamflow stations of ONS}
 \source{
 The metadata 87 hydroelectric power plants operated by ONS were
-supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
+supplied by Saul Aires (ANA's Specialist in Water Resources) by Prof. Carlos
 Lima (UnB), by email on 2020-03-17.
 }
 \usage{
@@ -30,8 +30,8 @@ is the name of the variables and the second the values of the variables.
 The data is processed in tidy format.
 }
 \examples{
-if(TRUE){
-  qnat_meta <- extract_metadata(find_data(), informative = TRUE)
+if(FALSE){
+  qnat_meta <- extract_metadata(NA_character_, informative = TRUE)
   str(qnat_meta)
 }
 }
