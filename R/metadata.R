@@ -13,7 +13,7 @@
 #'   str(qnat_meta)
 #' }
 #' @source The metadata 87 hydroelectric power plants operated by ONS were
-#' supplied by Saul Aires (ANA skilled in Water Resources) by Prof. Carlos
+#' supplied by Saul Aires (ANA's Specialist in Water Resources) by Prof. Carlos
 #' Lima (UnB), by email on 2020-03-17.
 #' @rdname extract_metadata
 #' @export
@@ -73,5 +73,4 @@ extract_metadata <- function(file, informative = FALSE) {
   }
   meta_data
 }
-
 
