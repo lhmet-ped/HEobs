@@ -1,5 +1,5 @@
 utils::globalVariables(c(
-  ".", "V1", "V2", "id"
+  ".", "V1", "V2", "id", "data", "valor", "qnat"
 ))
 
 
