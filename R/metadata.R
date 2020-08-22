@@ -9,7 +9,7 @@
 #'  The data is processed in tidy format.
 #' @examples
 #' if(FALSE){
-#'   qnat_meta <- extract_metadata(find_data(), informative = TRUE)
+#'   qnat_meta <- extract_metadata(NA_character_, informative = TRUE)
 #'   str(qnat_meta)
 #' }
 #' @source The metadata 87 hydroelectric power plants operated by ONS were
@@ -24,6 +24,9 @@
 #' @importFrom readr parse_guess
 #' @importFrom tidyselect vars_select_helpers
 extract_metadata <- function(file, informative = FALSE) {
+
+  if(is.na(file)) file <- find_data()
+
   meta_data <- rio::import(
     file = as.character(file),
     format = "csv",

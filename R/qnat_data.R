@@ -19,11 +19,12 @@ import_qnat <- function(
   complete = TRUE,
   add_stn_info = TRUE
 ) {
-  if(is.na(file)) file <- data_link
+  if(is.na(file)) file <- find_data()
   # find row were data start
   srow <- readr::read_lines(file, n_max = 30) %>%
     grep("^Data;Valor", .)
 
+  # read
   qnat_raw <- rio::import(
     file = as.character(file),
     format = "csv",
@@ -35,6 +36,7 @@ import_qnat <- function(
     na.strings = "null"
     # check.names = TRUE
   ) %>%
+    # start cleanup
     tibble::as_tibble() %>%
     # remove last column due to a extra sep
     dplyr::select(-ncol(.)) %>%
@@ -47,6 +49,7 @@ import_qnat <- function(
       )
     )
 
+  # tidy data
   qnat_tidy <- qnat_raw %>%
     tidyr::pivot_longer(
       tidyselect::everything(),
@@ -66,7 +69,7 @@ import_qnat <- function(
   if (!complete & !add_stn_info) {
     return(qnat_tidy)
   }
-  # data with complete dates and constant tome step
+  # data with complete dates and constant time step
   if (complete) {
     qnat_tidy <- lhmetools::complete_dates(
       x = qnat_tidy,
