@@ -1,14 +1,31 @@
+#' Import data file of daily naturalized streamflow
+#'
+#' @inheritParams extract_metadata
+#' @param complete logical, Default: TRUE. Make missing dates explicit using
+#'  `complete_dates()`.
+#' @param add_stn_info logical, Default: TRUE. Get code and station name
+#' from stations metadata.
+#'
+#' @return a [tibble][tibble::tibble-package]
+#' @export
+#'
+#' @examples
+#' if(FALSE){
+#'  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+#'  str(qnat)
+#' }
 import_qnat <- function(
-  txt_file = "../inst/extdata/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat",
+  file,
   complete = TRUE,
   add_stn_info = TRUE
 ) {
+  if(is.na(file)) file <- data_link
   # find row were data start
-  srow <- readr::read_lines(txt_file, n_max = 30) %>%
+  srow <- readr::read_lines(file, n_max = 30) %>%
     grep("^Data;Valor", .)
 
   qnat_raw <- rio::import(
-    file = as.character(txt_file),
+    file = as.character(file),
     format = "csv",
     fread = TRUE,
     sep = ";",
@@ -51,7 +68,7 @@ import_qnat <- function(
   }
   # data with complete dates and constant tome step
   if (complete) {
-    qnat_tidy <- complete_dates(
+    qnat_tidy <- lhmetools::complete_dates(
       x = qnat_tidy,
       group = "id",
       time_step = "days"
@@ -62,9 +79,10 @@ import_qnat <- function(
   }
   # want station's codes and names
   if (add_stn_info) {
-    qnat_tidy <- .add_cod_name(x = qnat_tidy, txt_file)
+    qnat_tidy <- .add_cod_name(qnat_tidy, file)
     return(qnat_tidy)
   }
 
   qnat
 }
+
