@@ -23,6 +23,10 @@ Imports:
     tibble,
     janitor,
     readr,
-    tidyselect
+    tidyselect,
+    tidyr,
+    lhmetools (>= 0.0.1)
 Depends: 
     R (>= 2.10)
+Remotes:  
+    lhmet/lhmetools
