@@ -105,9 +105,9 @@ import_qnat <- function(
 #'  output from [import_qnat].
 #' @inheritParams tidyr::pivot_wider
 #' @return a widen [tibble][tibble::tibble-package] version from
-#' input data `qnat`. Each column will correspond to a time series of a
+#' input data (`qnat`). Each column will correspond to a time series of a
 #' station. Default for variable names will be a string like `qnat_{names_from}`
-#' . Most of the time names_from is `code_stn` or `id`.
+#' . Most of the time the value of names_from is `code_stn` or `id`.
 #'
 #' @details This almost a wrapper function of `tidyr::pivot_wider()`.
 #' @export
@@ -125,12 +125,12 @@ wider <- function(qnat,
                   values_from = "qnat"
 ) {
 
-  checkmate::assert{
-    checkmate::assert_data_frame(qnat)
-    checkmate::assert_character(names_from)
-    checkmate::assert_character(names_prefix)
+  checkmate::assert(
+    checkmate::assert_data_frame(qnat),
+    checkmate::assert_character(names_from),
+    checkmate::assert_character(names_prefix),
     checkmate::assert_character(values_from)
-  }
+  )
 
   checkmate::assert_names(
     names(qnat),

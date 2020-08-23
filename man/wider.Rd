@@ -37,8 +37,9 @@ front of the output column.}
 }
 \value{
 a widen \link[tibble:tibble-package]{tibble} version from
-input data \code{qnat}. Each column will correspond to a time series of a
-station.
+input data (\code{qnat}). Each column will correspond to a time series of a
+station. Default for variable names will be a string like \verb{qnat_\{names_from\}}
+. Most of the time the value of names_from is \code{code_stn} or \code{id}.
 }
 \description{
 Pivot data from long to wide format
