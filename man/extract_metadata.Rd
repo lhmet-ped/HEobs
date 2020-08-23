@@ -17,7 +17,7 @@ extract_metadata(file, informative = FALSE)
 \item{informative}{Logical. Drop non-informative variables. Default: FALSE}
 }
 \value{
-a \link[tibble:tibble-package]{tibble} with tidy data
+a \link[tibble:tibble-package]{tibble} with tidy data.
 }
 \description{
 Import metadata from streamflow stations of ONS

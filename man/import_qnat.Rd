@@ -16,14 +16,19 @@ import_qnat(file, complete = TRUE, add_stn_info = TRUE)
 from stations metadata.}
 }
 \value{
-a \link[tibble:tibble-package]{tibble}
+a \link[tibble:tibble-package]{tibble} with tidy data.
 }
 \description{
 Import data file of daily naturalized streamflow
 }
+\details{
+The source ascii file contains data and metadata from ONS Hydroelectric
+Plants. Metadata is extracted with \link{extract_metadata} while the data is
+extract here.
+}
 \examples{
-if(FALSE){
- qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
- str(qnat)
+if (FALSE) {
+  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+  str(qnat)
 }
 }
