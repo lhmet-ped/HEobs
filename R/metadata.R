@@ -1,7 +1,7 @@
 #' Import metadata from streamflow stations of ONS
 #' @param file Character. Path to ascii data file (or a URL).
 #' @param informative Logical. Drop non-informative variables. Default: FALSE
-#' @return a [tibble][tibble::tibble-package] with tidy data
+#' @return a [tibble][tibble::tibble-package] with tidy data.
 #' @details The text file contains data and metadata from ONS Hydroelectric
 #' Plants. Metadata is extracted from the first 15 lines of the ascii file.
 #' The information for each HPP is stored in pairs of columns. The first column

@@ -50,6 +50,11 @@ utils::globalVariables(c(
   tibble::as_tibble(DT)
 }
 
+
+.check_user <- function(user = "hidrometeorologista"){
+  Sys.info()[["login"]] == user
+}
+
 # ------------------------------------------------------------------------------
 # Print file
 #
@@ -64,7 +69,7 @@ find_data <- function(local = TRUE){
   }
 
   # use local file for tests
-  if(Sys.info()[["login"]] == "hidrometeorologista"){
+  if(.check_user("hidrometeorologista")){
     ds_dir <- "~/Dropbox/datasets/GIS/BaciaHidrograficaONS-enviadoProfAssis"
     checkmate::assert_directory_exists(ds_dir)
     #if(dir.exists(ds_dir)){

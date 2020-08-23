@@ -5,21 +5,28 @@
 #'  `complete_dates()`.
 #' @param add_stn_info logical, Default: TRUE. Get code and station name
 #' from stations metadata.
-#'
-#' @return a [tibble][tibble::tibble-package]
+#' @details The source ascii file contains data and metadata from ONS Hydroelectric
+#' Plants. Metadata is extracted with [extract_metadata] while the data is
+#' extract here.
+#' @return a [tibble][tibble::tibble-package] with tidy data.
 #' @export
 #'
 #' @examples
-#' if(FALSE){
-#'  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
-#'  str(qnat)
+#' if (FALSE) {
+#'   qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+#'   str(qnat)
 #' }
 import_qnat <- function(
-  file,
-  complete = TRUE,
-  add_stn_info = TRUE
-) {
-  if(is.na(file)) file <- find_data()
+                        file,
+                        complete = TRUE,
+                        add_stn_info = TRUE) {
+  checkmate::assert(
+    checkmate::assert_character(file),
+    checkmate::assert_logical(complete),
+    checkmate::assert_logical(add_stn_info)
+  )
+
+  if (is.na(file)) file <- find_data()
   # find row were data start
   srow <- readr::read_lines(file, n_max = 30) %>%
     grep("^Data;Valor", .)
@@ -88,4 +95,3 @@ import_qnat <- function(
 
   qnat
 }
-
