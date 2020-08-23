@@ -26,10 +26,7 @@
 extract_metadata <- function(file, informative = FALSE) {
 
   if(is.na(file)) {
-    file <- ifelse(.check_user(),
-                   find_data(TRUE),
-                   find_data(FALSE)
-    )
+    file <- wise_select()
   }
 
   meta_data <- rio::import(

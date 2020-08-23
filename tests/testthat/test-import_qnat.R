@@ -10,10 +10,7 @@ test_that("Produces the correct output", {
   #2796267
   qnat <- data.table(
     import_qnat(
-    file = ifelse(.check_user(),
-                  find_data(TRUE),
-                  find_data(FALSE)
-    ),
+    file = wise_select(),
     complete = TRUE,
     add_stn_info = TRUE
     )
@@ -53,10 +50,7 @@ test_that("Produces the correct output without default options", {
 
   # complete and add_stn_info FALSE
   qnat <- import_qnat(
-      file = ifelse(.check_user(),
-                    find_data(TRUE),
-                    find_data(FALSE)
-      ),
+      file = wise_select(),
       complete = FALSE,
       add_stn_info = FALSE
   )
@@ -67,10 +61,7 @@ test_that("Produces the correct output without default options", {
 
   # add_stn_info FALSE
   qnat <- import_qnat(
-    file = ifelse(.check_user(),
-                  find_data(TRUE),
-                  find_data(FALSE)
-    ),
+    file = wise_select(),
     complete = TRUE,
     add_stn_info = FALSE
   )

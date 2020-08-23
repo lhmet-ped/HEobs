@@ -27,10 +27,7 @@ import_qnat <- function(
 
 
   if (is.na(file)) {
-    file <- ifelse(.check_user(),
-                   find_data(TRUE),
-                   find_data(FALSE)
-    )
+    file <- wise_select()
   }
   # find row were data start
   srow <- readr::read_lines(file, n_max = 30) %>%

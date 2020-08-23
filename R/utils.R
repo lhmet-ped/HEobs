@@ -55,6 +55,15 @@ utils::globalVariables(c(
   Sys.info()[["login"]] == user
 }
 
+
+wise_select <- function(user = "hidrometeorologista"){
+  dplyr::if_else(.check_user(user),
+         find_data(TRUE),
+         find_data(FALSE)
+  )
+}
+
+
 # ------------------------------------------------------------------------------
 # Print file
 #

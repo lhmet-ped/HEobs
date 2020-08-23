@@ -9,10 +9,7 @@ test_that("Produces the correct dimensions of output.", {
   # qnat <- data.table(import_qnat(NA_character_))
   # 2796267
   qnat_meta <- extract_metadata(
-    file = ifelse(.check_user(),
-      find_data(TRUE),
-      find_data(FALSE)
-    ),
+    file = wise_select(),
     # file = find_data(FALSE),
     informative = TRUE
   )
@@ -23,10 +20,7 @@ test_that("Produces the correct dimensions of output.", {
 
 
   qnat_meta <- extract_metadata(
-    file = ifelse(.check_user(),
-      find_data(TRUE),
-      find_data(FALSE)
-    ),
+    file = wise_select(),
     # file = find_data(FALSE),
     informative = FALSE
   )
@@ -48,10 +42,7 @@ test_that("Produces the correct dimensions of output.", {
 
 test_that("Produces the correct output type.", {
   qnat_meta <- extract_metadata(
-    file = ifelse(.check_user(),
-      find_data(TRUE),
-      find_data(FALSE)
-    ),
+    file = wise_select(),
     # file = find_data(FALSE),
     informative = TRUE
   )
@@ -63,11 +54,7 @@ test_that("Produces the correct errors.", {
 
   expect_error(
     extract_metadata(
-      file = ifelse(
-        .check_user(),
-        find_data(TRUE),
-        find_data(FALSE)
-      ),
+      file = wise_select(),
       informative = NULL
     )
   )
