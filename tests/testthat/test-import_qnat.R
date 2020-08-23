@@ -3,8 +3,9 @@ context("import_qnat()")
 
 #library(data.table)
 library(lubridate)
+library(checkmate)
 
-test_that("Produces the correct output.", {
+test_that("Produces the correct output", {
   #qnat <- data.table(import_qnat(NA_character_))
   #2796267
   qnat <- data.table(
@@ -48,6 +49,45 @@ test_that("Produces the correct output.", {
   expect_equal(daily_step, 1)
 })
 
+test_that("Produces the correct output without default options", {
+
+  # complete and add_stn_info FALSE
+  qnat <- import_qnat(
+      file = ifelse(.check_user(),
+                    find_data(TRUE),
+                    find_data(FALSE)
+      ),
+      complete = FALSE,
+      add_stn_info = FALSE
+  )
+  # expected dimension
+  exp_dim <- c(2205777, 3)
+  # expected start and end dates
+  expect_equal(dim(qnat), exp_dim)
+
+  # add_stn_info FALSE
+  qnat <- import_qnat(
+    file = ifelse(.check_user(),
+                  find_data(TRUE),
+                  find_data(FALSE)
+    ),
+    complete = TRUE,
+    add_stn_info = FALSE
+  )
+  # expected dimension
+  exp_dim <- c(2796267, 3)
+  # expected start and end dates
+  expect_equal(dim(qnat), exp_dim)
+
+})
+
 test_that("Produces the correct errors.", {
   expect_error(import_qnat(file = ""))
+  expect_error(import_qnat(file = NULL))
 })
+
+
+test_that("Produces the correct output type.", {
+  expect_data_frame(import_qnat(file = NA))
+})
+

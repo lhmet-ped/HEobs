@@ -2,7 +2,7 @@ context("extract_data()")
 
 # library(data.table)
 library(lubridate)
-
+library(checkmate)
 
 
 test_that("Produces the correct dimensions of output.", {
@@ -75,4 +75,17 @@ test_that("Produces the correct errors.", {
   expect_error(
     extract_metadata(file = "https://ndownloader.figshare.com/files/13366451")
   )
+})
+
+test_that("Produces the correct output type.", {
+  expect_data_frame(extract_metadata(file = NA))
+})
+
+test_that("Produces the correct output type with no local data.", {
+  qnat_meta <- extract_metadata(
+    file = find_data(local = FALSE),
+    # file = find_data(FALSE),
+    informative = TRUE
+  )
+  expect_is(qnat_meta, "tbl_df")
 })
