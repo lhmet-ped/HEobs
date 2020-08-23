@@ -20,13 +20,18 @@ import_qnat <- function(
                         file,
                         complete = TRUE,
                         add_stn_info = TRUE) {
-  checkmate::assert(
-    checkmate::assert_character(file),
-    checkmate::assert_logical(complete),
-    checkmate::assert_logical(add_stn_info)
-  )
 
-  if (is.na(file)) file <- find_data()
+    checkmate::assert_character(file)
+    checkmate::assert_logical(complete)
+    checkmate::assert_logical(add_stn_info)
+
+
+  if (is.na(file)) {
+    file <- ifelse(.check_user(),
+                   find_data(TRUE),
+                   find_data(FALSE)
+    )
+  }
   # find row were data start
   srow <- readr::read_lines(file, n_max = 30) %>%
     grep("^Data;Valor", .)
@@ -73,9 +78,9 @@ import_qnat <- function(
     dplyr::arrange(id)
 
 
-  if (!complete & !add_stn_info) {
-    return(qnat_tidy)
-  }
+  # if (!complete & !add_stn_info) {
+  #   return(qnat_tidy)
+  # }
   # data with complete dates and constant time step
   if (complete) {
     qnat_tidy <- lhmetools::complete_dates(
@@ -93,5 +98,5 @@ import_qnat <- function(
     return(qnat_tidy)
   }
 
-  qnat
+  qnat_tidy
 }
