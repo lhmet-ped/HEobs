@@ -9,8 +9,10 @@ test_that("Produces the correct output.", {
   #2796267
   qnat <- data.table(
     import_qnat(
-    #file = find_data(FALSE),
-    file = find_data(TRUE),
+    file = ifelse(.check_user(),
+                  find_data(TRUE),
+                  find_data(FALSE)
+    ),
     complete = TRUE,
     add_stn_info = TRUE
     )
