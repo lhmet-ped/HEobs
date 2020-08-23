@@ -12,8 +12,8 @@
 #' @export
 #'
 #' @examples
-#' if (FALSE) {
-#'   qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+#' if (TRUE) {
+#'   qnat <- import_qnat(NA_character_, complete = TRUE, add_stn_info = TRUE)
 #'   str(qnat)
 #' }
 import_qnat <- function(
@@ -97,3 +97,61 @@ import_qnat <- function(
 
   qnat_tidy
 }
+
+
+#' Pivot data from long to wide format
+#'
+#' @param qnat a [tibble][tibble::tibble-package] with tidy data. Usually the
+#'  output from [import_qnat].
+#' @inheritParams tidyr::pivot_wider
+#' @return a widen [tibble][tibble::tibble-package] version from
+#' input data `qnat`. Each column will correspond to a time series of a
+#' station. Default for variable names will be a string like `qnat_{names_from}`
+#' . Most of the time names_from is `code_stn` or `id`.
+#'
+#' @details This almost a wrapper function of `tidyr::pivot_wider()`.
+#' @export
+#'
+#' @examples
+#' if(FALSE){
+#'  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn_info = TRUE)
+#'  str(qnat)
+#'  qnat_wide <- wider(qnat)
+#'  str(qnat_wide)
+#' }
+wider <- function(qnat,
+                  names_from = "code_stn",
+                  names_prefix = "stn_",
+                  values_from = "qnat"
+) {
+
+  checkmate::assert{
+    checkmate::assert_data_frame(qnat)
+    checkmate::assert_character(names_from)
+    checkmate::assert_character(names_prefix)
+    checkmate::assert_character(values_from)
+  }
+
+  checkmate::assert_names(
+    names(qnat),
+    must.include = c("date", "id", "qnat")
+  )
+  checkmate::assert_choice(names_from, c("code_stn", "id"))
+  checkmate::assert_set_equal(values_from, "qnat")
+  if(names_from == "code_stn"){
+    checkmate::assert_names(
+      names(qnat),
+      must.include = c("date", "qnat", "code_stn")
+    )
+  }
+
+
+  qnat %>%
+    dplyr::select(tidyselect::all_of(c("date", names_from, values_from))) %>%
+    tidyr::pivot_wider(.,
+                names_from = tidyselect::all_of(names_from),
+                names_prefix,
+                values_from
+    )
+}
+

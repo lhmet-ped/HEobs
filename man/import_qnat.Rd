@@ -27,8 +27,8 @@ Plants. Metadata is extracted with \link{extract_metadata} while the data is
 extract here.
 }
 \examples{
-if (FALSE) {
-  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
+if (TRUE) {
+  qnat <- import_qnat(NA_character_, complete = TRUE, add_stn_info = TRUE)
   str(qnat)
 }
 }

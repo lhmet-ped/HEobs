@@ -3,6 +3,7 @@
 export("%>%")
 export(extract_metadata)
 export(import_qnat)
+export(wider)
 import(data.table)
 importFrom(dplyr,across)
 importFrom(dplyr,everything)
