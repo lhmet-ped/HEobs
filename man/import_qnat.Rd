@@ -28,7 +28,9 @@ extract here.
 }
 \examples{
 if (FALSE) {
-  data_link <- 'https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1'
+  data_link <- paste0('https://www.dropbox.com/s/d40adhw66uwueet/',
+                      'VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1'
+  )
   qnat <- import_qnat(data_link, complete = TRUE, add_stn_info = TRUE)
   str(qnat)
   # saveRDS(qnat, file = "qnat.RDS")

@@ -2,6 +2,7 @@
 
 export("%>%")
 export(extract_metadata)
+export(extract_qnat)
 export(import_qnat)
 export(wider)
 import(data.table)
