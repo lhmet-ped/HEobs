@@ -3,6 +3,22 @@ utils::globalVariables(c(
 ))
 
 
+#-----------------------------------------------------------------------------
+#' Save data from a ONS station in a RDS file
+save_data <- function(data_posto,
+                      .prefix = "qnat-obs-posto-",
+                      .posto_id,
+                      .dest_dir = "output"){
+
+  data_posto_file <- paste0(.prefix, .posto_id, ".RDS")
+  data_posto_file <- file.path(.dest_dir, data_posto_file)
+
+  saveRDS(data_posto, file = data_posto_file)
+  checkmate::assert_file_exists(data_posto_file)
+  data_posto_file
+}
+
+
 #---------------------------------------------------------------
 .replace_bigneg <- function(x) replace(x, which(x < -999), NA)
 
