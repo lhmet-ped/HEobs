@@ -12,9 +12,11 @@
 #' @export
 #'
 #' @examples
-#' if (TRUE) {
-#'   qnat <- import_qnat(NA_character_, complete = TRUE, add_stn_info = TRUE)
+#' if (FALSE) {
+#'   data_link <- 'https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1'
+#'   qnat <- import_qnat(data_link, complete = TRUE, add_stn_info = TRUE)
 #'   str(qnat)
+#'   # saveRDS(qnat, file = "qnat.RDS")
 #' }
 import_qnat <- function(
                         file,
@@ -154,4 +156,72 @@ wider <- function(qnat,
                 values_from
     )
 }
+
+#' Extract natural stramflow data from a ONS station and save to RDS file
+#'
+#' @param qnat_file Character. Path to ascii data file (or a URL).
+#' @param stn_id integer, station code from ONS station (output from
+#' `info_station()[["posto"]]`).
+#' @param save logical, TRUE to export data to RDS file.
+#' @param prefix prefix to RDS file
+#' @param dest_dir a character with the name of where the RDS file is
+#' saved. Default: `fusepoc-prep/output`.
+#' @return
+#' @export
+#'
+#' @examples
+#' @seealso import_qnat
+extract_qnat <- function(qnat_file = NA,
+                         stn_id = 74,
+                         save = TRUE,
+                         prefix = "qnat-obs-posto-",
+                         dest_dir = "output") {
+  checkmate::assert_true(requireNamespace("HEobs", quietly = TRUE))
+
+  # quando file NA usa arquivo local
+  qnat <- import_qnat(
+    file = qnat_file,
+    complete = TRUE,
+    add_stn_info = TRUE
+  )
+
+  qnat_posto <- qnat %>%
+    dplyr::filter(code_stn == info$posto[1]) %>%
+    dplyr::select(date, posto = code_stn, qnat)
+
+  # período de dados válidos
+  se_date <- qnat_posto %>%
+    dplyr::filter(!is.na(qnat)) %>%
+    dplyr::summarise(
+      start = min(date),
+      end = max(date)
+    )
+
+  # filtra para período de dados válidos
+  qnat_posto <- qnat_posto %>%
+    dplyr::filter(date >= se_date[[1]]
+                  &
+                    date <= se_date[[2]])
+
+  if(save){
+    save_data(
+      data_posto = qnat_posto,
+      .prefix = prefix,
+      .posto_id = info$posto[1],
+      .dest_dir = dest_dir
+    )
+  }
+  qnat_posto
+}
+
+
+# Atualização dos dados de vazão 01/2019 - 08/2020 -----------------------------
+# http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Historico
+# Reservatorio: G. B. MUNHOZ
+# Inicio: 01/01/2018
+# Fim: 31/08/2020
+## library(httr)
+## resp <- httr::GET("http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx/Historico?Reservatorio=14dejulho&Inicio=01/01/2019&Fim=31/01/2019")
+## httr::content(resp, as = "text")
+#x <- jsonlite::fromJSON(txt = "input/Historico.xml", flatten = TRUE)
 
