@@ -13,7 +13,9 @@
 #'
 #' @examples
 #' if (FALSE) {
-#'   data_link <- 'https://www.dropbox.com/s/d40adhw66uwueet/VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1'
+#'   data_link <- paste0('https://www.dropbox.com/s/d40adhw66uwueet/',
+#'                       'VazoesNaturaisONS_D_87UHEsDirceuAssis_2018.dat?dl=1'
+#'   )
 #'   qnat <- import_qnat(data_link, complete = TRUE, add_stn_info = TRUE)
 #'   str(qnat)
 #'   # saveRDS(qnat, file = "qnat.RDS")
@@ -166,10 +168,18 @@ wider <- function(qnat,
 #' @param prefix prefix to RDS file
 #' @param dest_dir a character with the name of where the RDS file is
 #' saved. Default: `fusepoc-prep/output`.
-#' @return
+#' @return a tibble with columns `date`, `posto`, `qnat` (cmecs).
 #' @export
 #'
 #' @examples
+#' if(FALSE){
+#'  qnat_posto <- extract_qnat(
+#'                  qnat_file = NA,
+#'                  stn_id = 74,
+#'                  save = FALSE
+#'                  )
+#'  str(qnat_posto)
+#' }
 #' @seealso import_qnat
 extract_qnat <- function(qnat_file = NA,
                          stn_id = 74,
@@ -186,7 +196,7 @@ extract_qnat <- function(qnat_file = NA,
   )
 
   qnat_posto <- qnat %>%
-    dplyr::filter(code_stn == info$posto[1]) %>%
+    dplyr::filter(code_stn == stn_id) %>%
     dplyr::select(date, posto = code_stn, qnat)
 
   # período de dados válidos
@@ -207,7 +217,7 @@ extract_qnat <- function(qnat_file = NA,
     save_data(
       data_posto = qnat_posto,
       .prefix = prefix,
-      .posto_id = info$posto[1],
+      .posto_id = stn_id,
       .dest_dir = dest_dir
     )
   }

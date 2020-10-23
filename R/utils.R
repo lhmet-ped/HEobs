@@ -1,10 +1,11 @@
 utils::globalVariables(c(
-  ".", "V1", "V2", "id", "data", "valor", "qnat"
+  ".", "V1", "V2", "id", "data", "valor", "qnat", "code_stn"
 ))
 
 
 #-----------------------------------------------------------------------------
 #' Save data from a ONS station in a RDS file
+#' @noRd
 save_data <- function(data_posto,
                       .prefix = "qnat-obs-posto-",
                       .posto_id,
