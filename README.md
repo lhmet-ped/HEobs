@@ -16,7 +16,7 @@ You can install HEobs from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("lhmet/HEobs")
+devtools::install_github("lhmet-ped/HEobs")
 ```
 
 ## Example
