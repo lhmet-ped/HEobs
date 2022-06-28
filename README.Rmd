@@ -50,3 +50,13 @@ qnat <- import_qnat(NA_character_, complete = TRUE, add_stn = TRUE)
 str(qnat)
 ```
 
+## Data from [hydrobr](https://github.com/lhmet/hydrobr/tree/master/hydrobr)
+
+
+```{r}
+library(dplyr)
+qnat_hbr <- data.table::fread('https://raw.githubusercontent.com/lhmet/hydrobr/master/hydrobr/resources/ONS_daily_flow.csv')
+str(qnat_hbr)
+```
+
+
