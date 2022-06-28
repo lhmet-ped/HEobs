@@ -225,13 +225,53 @@ extract_qnat <- function(qnat_file = NA,
 }
 
 
-# Atualização dos dados de vazão 01/2019 - 08/2020 -----------------------------
+# Atualização dos dados de vazão usando API da ONS ----------------------------
+
 # http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Historico
-# Reservatorio: G. B. MUNHOZ
-# Inicio: 01/01/2018
-# Fim: 31/08/2020
-## library(httr)
-## resp <- httr::GET("http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx/Historico?Reservatorio=14dejulho&Inicio=01/01/2019&Fim=31/01/2019")
-## httr::content(resp, as = "text")
-#x <- jsonlite::fromJSON(txt = "input/Historico.xml", flatten = TRUE)
+
+# library(httr); library(xml2); library(tidyverse)
+#  r <- httr::GET("http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx/Historico?Reservatorio=FURNAS&Inicio=01/12/2021&Fim=20/05/2022")
+#  rc <- httr::content(r, 'parsed')
+#
+#  data_df <- XML::xmlParse(rc) %>%
+#      XML::getNodeSet(path = "//tb_historico") %>%
+#    XML::xmlToDataFrame(stringsAsFactors = FALSE)
+#
+#  tbl <- readr::type_convert(data_df,
+#                      col_types = readr::cols(
+#                        res_id = readr::col_character(),
+#                        Reservatorio = readr::col_character(),
+#                        Data = readr::col_datetime(format = "%d/%m/%Y %H:%M:%S"),
+#                        Grandeza = readr::col_character(),
+#                        Valor = readr::col_double()
+#                      )) %>%
+#    tibble::as_tibble() %>%
+#    tidyr::pivot_wider(names_from = "Grandeza", values_from = "Valor") %>%
+#    janitor::clean_names() %>%
+#    rename_with(~.x %>% str_replace(pattern = "m3_s", replacement = "cumecs"))
+#
+
+# metadata dos reservatorios ONS -----------------------------------------------
+# r <- httr::GET("http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx/Cadastro?Nome=*")
+# rc <- httr::content(r, "parsed")
+#
+# info_df <- XML::xmlParse(rc) %>%
+#   XML::getNodeSet(path = "//tb_CadastroReservatorio") %>%
+#   XML::xmlToDataFrame(stringsAsFactors = FALSE)
+#
+# info_tbl <- type.convert(info_df, as.is = TRUE) %>%
+#    tibble::as_tibble() %>%
+#   dplyr::mutate(across(where(is.character), ~str_trim(.x, side = "both")))
+#
+# info_tbl$res_nomecurto
+
+
+# Media de longo termo --------------------------------------------------------
+# TO DO
+# http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Media_de_longo_tempo
+
+
+# tabela cota x volume
+# http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Tabela_cota_volume
+
 
