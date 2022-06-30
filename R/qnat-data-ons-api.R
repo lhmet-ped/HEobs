@@ -224,9 +224,9 @@ ons_metadata <- function(res_name = "*"){
     )
   )
 
-  if(HEgis:::url_exists(ons_url)) return(ons_url)
+  #if(HEgis:::url_exists(ons_url)) return(ons_url)
 
-  invisible(ons_url)
+  #invisible(ons_url)
 }
 
 
