@@ -27,11 +27,13 @@ Imports:
     tidyr,
     tidyselect,
     XML,
-    stringr
+    stringr,
+    HEgis (>= 0.0.6.9000)
 Suggests: 
     testthat
-Remotes: 
-    lhmet/lhmetools
+Remotes:  
+    lhmet/lhmetools,
+    lhmet/HEgis
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
