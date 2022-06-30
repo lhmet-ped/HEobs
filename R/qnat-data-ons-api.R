@@ -13,7 +13,7 @@
 #' @examples
 ons_hist_data <- function(res_name = "FURNAS",
                           start_date = "01/05/2021",
-                          end_date = format(lubridate::dmy(start_date) + 365, "%d/%m/%Y"),
+                          end_date = format(lubridate::dmy(start_date) + 365, "%d/%m/%Y")
                           ){
 
   hist_url <- .ons_url("historico")
@@ -229,7 +229,7 @@ ons_metadata <- function(res_name = "*"){
   #invisible(ons_url)
 }
 
-
+# PROBLEMA - PAREI AQUI
 #  -----------------------------------------------
 #' Dowload the long-term averages of the flow series of the ONS reservoirs
 #'
@@ -240,14 +240,16 @@ ons_metadata <- function(res_name = "*"){
 #'
 #' @examples
 #' if(FALSE){
-#'  info_ons <- ons_metadata()
-#'  info_ons
+#'  my_res <- ons_reservoir_names[1]
+#'  mlt <- ons_longterm(res_name = my_res)
+#'  mlt
 #' }
 # http://aplicam.ons.org.br/hidrologia/reservatorio.asmx
 ons_longterm <- function(res_name = "FURNAS"){
 
+   # res_name = ons_reservoir_names[1]
   mlt_url <- .ons_url("media_de_longo_tempo") %>%
-    glue::glue(mlt_url)
+    glue::glue()
 
   # to avoid getting flagged as a spammer
   Sys.sleep(1)
@@ -266,9 +268,10 @@ ons_longterm <- function(res_name = "FURNAS"){
 
 
   rc <- httr::content(r, "parsed")
+  p <- "//Média_x0020_de_x0020_longo_x0020_tempo_x003A__x0020_{res_name}"
 
   info_df <- XML::xmlParse(rc) %>%
-    XML::getNodeSet(path = "//tb_CadastroReservatorio") %>%
+    XML::getNodeSet(path = glue::glue(p)) %>%
     XML::xmlToDataFrame(stringsAsFactors = FALSE)
 
   info_tbl <- type.convert(info_df, as.is = TRUE) %>%
@@ -277,7 +280,11 @@ ons_longterm <- function(res_name = "FURNAS"){
                                 ~stringr::str_trim(.x, side = "both")
     )
     ) %>%
-    relocate(res_nomecurto, usi_id, tpusina_id, id_resjusante, .before = "bacia_id")
+    dplyr::rename_with(.fn = ~.x %>% str_replace_all("x0020_", "")) %>%
+    janitor::clean_names() %>%
+    dplyr::mutate(res_nomecurto = res_name) %>%
+    dplyr::relocate(res_nomecurto)
+
 
   info_tbl
 }
