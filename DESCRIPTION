@@ -1,35 +1,38 @@
 Package: HEobs
-Title: Data Processing Of Natural Streamflow And Metadata From Ons Stations
+Title: Data Processing Of Natural Streamflow And Metadata From Ons
+    Stations
 Version: 0.0.3
 Authors@R: 
-    person(given = "Jônatan",
-           family = "Tatsch",
-           role = c("aut", "cre"),
-           email = "lhmet@ufsm.br")
-Description: Ingest, clean and tidy data of natural streamflow and metadata from ONS stations.
+    person("Jônatan", "Tatsch", , "lhmet@ufsm.br", role = c("aut", "cre"))
+Description: Ingest, clean and tidy data of natural streamflow and
+    metadata from ONS stations.
 License: MIT + file LICENSE
+URL: https://github.com/lhmet/HEobs
+BugReports: https://github.com/lhmet/HEobs/issues
+Depends: 
+    R (>= 2.10)
+Imports: 
+    checkmate,
+    data.table,
+    glue,
+    dplyr,
+    httr,
+    janitor,
+    lhmetools (>= 0.0.1),
+    lubridate,
+    magrittr,
+    readr,
+    rio,
+    tibble,
+    tidyr,
+    tidyselect,
+    XML,
+    stringr
+Suggests: 
+    testthat
+Remotes: 
+    lhmet/lhmetools
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-URL: https://github.com/lhmet/HEobs
-BugReports: https://github.com/lhmet/HEobs/issues
-Imports: 
-    data.table,
-    checkmate,
-    magrittr,
-    rio,
-    dplyr,
-    tibble,
-    janitor,
-    readr,
-    tidyselect,
-    tidyr,
-    lhmetools (>= 0.0.1),
-    lubridate
-Depends: 
-    R (>= 2.10)
-Remotes: 
-    lhmet/lhmetools
-Suggests: 
-    testthat
