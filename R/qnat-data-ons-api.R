@@ -1,24 +1,38 @@
 
 # Atualização dos dados de vazão usando API da ONS ----------------------------
 
+#' Download Historical data observed in the reservoirs dispatched by the ONS.
+#'
+#' @param res_name
+#' @param start_date
+#' @param end_date
+#'
+#' @return
+#' @export
+#'
+#' @examples
 ons_hist_data <- function(res_name = "FURNAS",
                           start_date = "01/05/2021",
                           end_date = format(lubridate::dmy(start_date) + 365, "%d/%m/%Y"),
                           ){
 
-  base_url <- "http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx"
-  hist_url <- paste0(
-    base_url, "/Historico?",
-    "Reservatorio={res_name}&Inicio={start_date}&Fim={end_date}"
-  )
+  hist_url <- .ons_url("historico")
   hist_url <- glue::glue(hist_url)
 
   # to avoid getting flagged as a spammer
   Sys.sleep(1)
 
-  r <- httr::GET(hist_url)
+  r <- httr::GET(hist_url,httr::timeout(30))
 
-  checkmate::assert_set_equal(httr::status_code(r), 200)
+  #checkmate::assert_set_equal(httr::status_code(r), 200)
+  if (((httr::status_code(r) %/% 200) != 1)) {
+    warning(
+      sprintf("Requests for [%s] responded but without an HTTP status code in the 200-299 range",
+              hist_url
+      )
+    )
+    return(NA_character_)
+  }
 
   rc <- httr::content(r, "parsed")
 
@@ -56,7 +70,7 @@ ons_hist_data <- function(res_name = "FURNAS",
 #   end_date <- paste0("31/12/", year)
 # }
 
-
+# Visualização dos dados baixados
 .plot_ons_hist_data <- function(flow_data){
 
   checkmate::assert_names(names(flow_data),
@@ -78,7 +92,8 @@ ons_hist_data <- function(res_name = "FURNAS",
 
 }
 
-
+# Para verificar a correlação entre a vazao_natural e a vazao_incremental_mm ---
+# Aparentemente nao precisamos calcular a vazão incremental.
 .check_corr <- function(flow_data){
   ## incrementais mais correlacionadas com qnat
   flow_data %>%
@@ -103,33 +118,173 @@ ons_hist_data <- function(res_name = "FURNAS",
 
 
 
-tbl <- ons_hist_data(res_name = "FURNAS", start_date = "01/05/2021")
-.plot_ons_hist_data(tbl)
-.check_corr(tbl)
+# tbl <- ons_hist_data(res_name = "FURNAS", start_date = "01/05/2021")
+# .plot_ons_hist_data(tbl)
+# .check_corr(tbl)
 
 
 
 
 
 
-# metadata dos reservatorios ONS -----------------------------------------------
-# r <- httr::GET("http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx/Cadastro?Nome=*")
-# rc <- httr::content(r, "parsed")
-#
-# info_df <- XML::xmlParse(rc) %>%
-#   XML::getNodeSet(path = "//tb_CadastroReservatorio") %>%
-#   XML::xmlToDataFrame(stringsAsFactors = FALSE)
-#
-# info_tbl <- type.convert(info_df, as.is = TRUE) %>%
-#    tibble::as_tibble() %>%
-#   dplyr::mutate(across(where(is.character), ~str_trim(.x, side = "both")))
-#
-# info_tbl$res_nomecurto
+#  -----------------------------------------------
+#' Download metetadata from ONS reservoirs
+#'
+#' @param res_name short name of reservoir, default is '*' to get metadata
+#' from all reservoirs.
+#'
+#' @return tibble with 46 variables.
+#' @export
+#'
+#' @examples
+#' if(FALSE){
+#'  library(dplyr)
+#'  info_ons <- ons_metadata()
+#'  head(info_ons)
+#'  # no artificial reservoirs
+#'  filter(info_ons, tpres_id != "ART")
+#' }
+#'
+ons_metadata <- function(res_name = "*"){
 
 
-# Media de longo termo --------------------------------------------------------
-# TO DO
-# http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Media_de_longo_tempo
+  cad_url <- .ons_url("cadastro")
+  cad_url <- glue::glue(cad_url)
+
+  # to avoid getting flagged as a spammer
+  Sys.sleep(1)
+
+  r <- httr::GET(cad_url, httr::timeout(20))
+
+  #checkmate::assert_set_equal(httr::status_code(r), 200)
+  if (((httr::status_code(r) %/% 200) != 1)) {
+    warning(
+      sprintf("Requests for [%s] responded but without an HTTP status code in the 200-299 range",
+              cad_url
+      )
+    )
+    return(NULL)
+  }
+
+  rc <- httr::content(r, "parsed")
+
+  info_df <- XML::xmlParse(rc) %>%
+    XML::getNodeSet(path = "//tb_CadastroReservatorio") %>%
+    XML::xmlToDataFrame(stringsAsFactors = FALSE)
+
+  info_tbl <- type.convert(info_df, as.is = TRUE) %>%
+     tibble::as_tibble() %>%
+    dplyr::mutate(dplyr::across(where(is.character),
+                                ~stringr::str_trim(.x, side = "both")
+                                )
+                  ) %>%
+    relocate(res_nomecurto, usi_id, tpusina_id, id_resjusante, .before = "bacia_id")
+
+  info_tbl
+}
+
+# filter(info_ons, tpres_id != "ART")
+# 172 reservatorios
+# 19 reservatorios artificiais
+
+
+#' Sets the proper url according to the requested operation
+#'
+#' @param type one of the options: "cadastro", "historico",
+#'  "media_de_longo_tempo" or "tabela_cota_volume".
+#'
+#' @return URL for the operation request.
+#' @export
+#' @keywords internal
+#' @examples
+.ons_url <- function(
+  type = c("cadastro", "historico", "media_de_longo_tempo", "tabela_cota_volume")
+) {
+  base_url <- "http://aplicam.ons.org.br/hidrologia/reservatorio.asmx"
+
+  ons_url <- switch(type,
+    cadastro = paste0(
+      base_url,
+      "/Cadastro?",
+      "Nome={res_name}"
+    ),
+    historico = paste0(
+      base_url, "/Historico?",
+      "Reservatorio={res_name}&Inicio={start_date}&Fim={end_date}"
+    ),
+    media_de_longo_tempo = paste0(
+      base_url,
+      "/Media_de_longo_tempo?",
+      "Reservatorio={res_name}"
+    ),
+    tabela_cota_volume = paste0(
+      base_url,
+      "/Tabela_cota_volume?",
+      "Reservatorio={res_name}"
+    )
+  )
+
+  if(HEgis:::url_exists(ons_url)) return(ons_url)
+
+  invisible(ons_url)
+}
+
+
+#  -----------------------------------------------
+#' Dowload the long-term averages of the flow series of the ONS reservoirs
+#'
+#' @param res_name short name of reservoir.
+#'
+#' @return tibble with X columns and Y rows..
+#' @export
+#'
+#' @examples
+#' if(FALSE){
+#'  info_ons <- ons_metadata()
+#'  info_ons
+#' }
+# http://aplicam.ons.org.br/hidrologia/reservatorio.asmx
+ons_longterm <- function(res_name = "FURNAS"){
+
+  mlt_url <- .ons_url("media_de_longo_tempo") %>%
+    glue::glue(mlt_url)
+
+  # to avoid getting flagged as a spammer
+  Sys.sleep(1)
+
+  r <- httr::GET(mlt_url, httr::timeout(20))
+
+  #checkmate::assert_set_equal(httr::status_code(r), 200)
+  if (((httr::status_code(r) %/% 200) != 1)) {
+    warning(
+      sprintf("Requests for [%s] responded but without an HTTP status code in the 200-299 range",
+              mlt_url
+             )
+    )
+    return(NULL)
+  }
+
+
+  rc <- httr::content(r, "parsed")
+
+  info_df <- XML::xmlParse(rc) %>%
+    XML::getNodeSet(path = "//tb_CadastroReservatorio") %>%
+    XML::xmlToDataFrame(stringsAsFactors = FALSE)
+
+  info_tbl <- type.convert(info_df, as.is = TRUE) %>%
+    tibble::as_tibble() %>%
+    dplyr::mutate(dplyr::across(where(is.character),
+                                ~stringr::str_trim(.x, side = "both")
+    )
+    ) %>%
+    relocate(res_nomecurto, usi_id, tpusina_id, id_resjusante, .before = "bacia_id")
+
+  info_tbl
+}
+
+
+
+
 
 
 # tabela cota x volume
