@@ -178,7 +178,7 @@ ons_metadata <- function(res_name = "*"){
                                 ~stringr::str_trim(.x, side = "both")
                                 )
                   ) %>%
-    relocate(res_nomecurto, usi_id, tpusina_id, id_resjusante, .before = "bacia_id")
+    dplyr::relocate(res_nomecurto, usi_id, tpusina_id, id_resjusante, .before = "bacia_id")
 
   info_tbl
 }
@@ -229,8 +229,22 @@ ons_metadata <- function(res_name = "*"){
   #invisible(ons_url)
 }
 
-# PROBLEMA - PAREI AQUI
+
 #  -----------------------------------------------
+.fix_res_name <- function(x) {
+  # x = data_mlt
+  if ("ARTIFICIAL" %in% unique(x$tipo_vazao)) {
+    x <- x %>%
+      dplyr::mutate(res_nomecurto = ifelse(tipo_vazao == "ARTIFICIAL",
+        paste0(res_nomecurto, " ART"),
+        res_nomecurto
+      ))
+  }
+  x
+}
+
+
+
 #' Dowload the long-term averages of the flow series of the ONS reservoirs
 #'
 #' @param res_name short name of reservoir.
@@ -240,14 +254,18 @@ ons_metadata <- function(res_name = "*"){
 #'
 #' @examples
 #' if(FALSE){
-#'  my_res <- ons_reservoir_names[1]
-#'  mlt <- ons_longterm(res_name = my_res)
+#'  mlt <- .ons_mlt(res_name = "ANTA")
 #'  mlt
 #' }
-# http://aplicam.ons.org.br/hidrologia/reservatorio.asmx
-ons_longterm <- function(res_name = "FURNAS"){
 
-   # res_name = ons_reservoir_names[1]
+.ons_mlt <- function(res_name = "FURNAS"){
+
+  message("Downloading MLT para: ", res_name, "\n")
+
+  # res_name = 'ANTA'
+  # res_name = 'TIBAGI MONTANTE'
+  res_name_orig <- res_name
+  res_name <- gsub(" ", "%20", res_name)
   mlt_url <- .ons_url("media_de_longo_tempo") %>%
     glue::glue()
 
@@ -268,33 +286,76 @@ ons_longterm <- function(res_name = "FURNAS"){
 
 
   rc <- httr::content(r, "parsed")
-  p <- "//Média_x0020_de_x0020_longo_x0020_tempo_x003A__x0020_{res_name}"
+  mlt_list <- xml2::as_list(rc)
+  mlt_list <- purrr::flatten_df(mlt_list)[["NewDataSet"]] %>%
+    purrr::compact()
 
-  info_df <- XML::xmlParse(rc) %>%
-    XML::getNodeSet(path = glue::glue(p)) %>%
-    XML::xmlToDataFrame(stringsAsFactors = FALSE)
+  if(length(names(mlt_list)) == 1) {
+    warning("Não foram encontrados dados para o resrvatório: ",
+            res_name_orig,
+            "\n",
+            mlt_url
+    )
+    return(
+      tibble::tribble(
+        ~res_nomecurto, ~res_id,       ~mes,          ~tipo_vazao,   ~valor,
+        res_name_orig,  NA_character_, NA_character_, NA_character_, NA_real_
+      )
+    )
+  }
 
-  info_tbl <- type.convert(info_df, as.is = TRUE) %>%
-    tibble::as_tibble() %>%
+  #names(nested_df) <- paste0(names(nested_df), 1:length(nested_df))
+  data_mlt <- purrr::map_df(mlt_list, ~.x %>% purrr::flatten_df())
+
+
+  data_mlt <- type.convert(data_mlt, as.is = TRUE) %>%
     dplyr::mutate(dplyr::across(where(is.character),
                                 ~stringr::str_trim(.x, side = "both")
     )
     ) %>%
-    dplyr::rename_with(.fn = ~.x %>% str_replace_all("x0020_", "")) %>%
+    dplyr::rename_with(.fn = ~.x %>% stringr::str_replace_all("x0020_", "")) %>%
     janitor::clean_names() %>%
-    dplyr::mutate(res_nomecurto = res_name) %>%
+    dplyr::mutate(res_nomecurto = stringr::str_replace_all(res_name, "%20", " ")) %>%
     dplyr::relocate(res_nomecurto)
 
+  .fix_res_name(data_mlt)
 
-  info_tbl
+
 }
 
 
+ons_longterm_all <- function(){
+  md <- ons_metadata()
+  # dplyr::filter(md, is.na(tpusina_id))
+  # table(md$tpres_id)
+  # ART CED FIC FIO INC RBB RCU RES
+  # 19   1   2  92   1   3  62  11
+  #res_names <-  dplyr::filter(md, !is.na(tpusina_id)) %>%
+  #  dplyr::pull("res_nomecurto")
+  purrr::map_df(res_names, ~.ons_mlt(.x))
+}
 
-
-
-
-# tabela cota x volume
-# http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Tabela_cota_volume
-
-
+# ons_mlt_data <- ons_longterm_all()
+#
+# by_res <- ons_mlt_data %>% dplyr::group_by(res_nomecurto) %>% dplyr::tally()
+# #24 linhas?
+# by_res
+#
+# nao_baixados <- res_names[!res_names %in% by_res$res_nomecurto]
+# View(dplyr::filter(md, !res_nomecurto %in% by_res$res_nomecurto) %>%
+#        dplyr::relocate("tpres_id", .after = "res_nomecurto")
+# )
+#
+#
+#
+# # tabela cota x volume
+# # http://aplicam.ons.org.br/hidrologia/Reservatorio.asmx?op=Tabela_cota_volume
+#
+# ons_mlt_data %>%
+# dplyr::filter(tipo_vazao == "ARTIFICIAL") %>%
+#   dplyr::distinct(res_nomecurto, tipo_vazao)
+#
+#
+# by_res %>%
+#   dplyr::filter(n == 24)
+#
